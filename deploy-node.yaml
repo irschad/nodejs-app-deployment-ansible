@@ -1,0 +1,51 @@
+---
+- name: Install node and npm
+  hosts: 44.222.168.148
+  tasks:
+    - name: yum update
+      yum: update_cache=yes update_only=yes
+    - name: install nodejs and npm
+      yum: 
+        name: nodejs
+        state: present
+    - name: Verify Node.js installation
+      command: node --version
+    - name: Verify npm installation
+      command: npm --version
+
+- name: Create new linux user for node app
+  hosts: 44.222.168.148
+  tasks:
+    - name: Ensure the admin group exists
+      group:
+        name: admin
+        state: present
+    - name: Create linux user
+      user:
+        name: nodeadmin
+        comment: Node Administrator
+        group: admin
+  
+- name: Deploy nodejs app
+  hosts: 44.222.168.148
+  become: True
+  become_user: nodeadmin
+  tasks:
+    - name: Unpack the the nodejs file
+      unarchive: 
+        src: /root/ansible/nodejs-app-1.0.0.tgz
+        dest: /home/nodeadmin
+    - name: Install dependencies
+      npm:
+        path: /home/nodeadmin/package
+    - name: Start the application
+      command:
+        chdir: /home/nodeadmin/package/app
+        cmd: node server
+      async: 1000
+      poll: 0
+    - name: Ensure app is running
+      shell: ps aux | grep node
+      register: app_status
+    - debug: msg={{app_status.stdout_lines}}
+
