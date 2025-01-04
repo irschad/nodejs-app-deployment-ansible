@@ -206,19 +206,4 @@ ansible_user=ec2-user
   ps aux | grep node
   ```
 
-## Key Features
-- Automates the installation of Node.js and npm.
-- Creates a dedicated Linux user for application security.
-- Deploys a Node.js application from a tarball.
-- Ensures the application is running and outputs debug information for verification.
-
-## Troubleshooting
-- **SSH Connection Issues**: Ensure the `ansible_ssh_private_key_file` path and `ansible_user` are correctly configured in the `hosts` file.
-- **Application Not Running**: Check logs using the debug task output or by manually inspecting `/home/nodeadmin/package/app`.
-- **Permissions Issues**: Verify the `nodeadmin` user has the correct permissions for the application directory.
-
-## Future Enhancements
-- Integrate with CI/CD pipelines for continuous deployment.
-- Add monitoring and logging for the Node.js application.
-- Automate SSL certificate installation for secure HTTP access.
 
